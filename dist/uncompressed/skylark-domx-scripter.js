@@ -248,8 +248,12 @@ define('skylark-domx-scripter/scripter',[
     return skylark.attach("domx.scripter", scripter);
 });
 define('skylark-domx-scripter/main',[
-	"./scripter"
-],function(scripter){
+	"./scripter",
+	"skylark-domx-query"
+],function(scripter,$){
+
+    $.fn.html = $.wraps.wrapper_value(scripter.html, scripter, scripter.html);
+
 	return scripter;
 });
 define('skylark-domx-scripter', ['skylark-domx-scripter/main'], function (main) { return main; });

@@ -5,5 +5,5 @@
  * @link www.skylarkjs.org
  * @license MIT
  */
-define(["./scripter"],function(e){return e});
+define(["./scripter","skylark-domx-query"],function(r,e){return e.fn.html=e.wraps.wrapper_value(r.html,r,r.html),r});
 //# sourceMappingURL=sourcemaps/main.js.map
