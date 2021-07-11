@@ -1,9 +1,7 @@
 define([
     "skylark-langx/skylark",
-    "skylark-langx/langx",
-    "skylark-domx-noder",
-    "skylark-domx-finder"
-], function(skylark, langx, noder, finder) {
+    "skylark-langx/langx"
+], function(skylark, langx, noder) {
 
     var head = document.getElementsByTagName('head')[0],
         scriptsByUrl = {},
@@ -126,7 +124,9 @@ define([
             var node = scriptElementsById[id];
             if (node) {
                 var url = node.src;
-                noder.remove(node);
+                if (node.parentNode) {
+                    node.parentNode.remove(node);
+                }
                 delete scriptElementsById[id];
                 delete scriptsByUrl[url];
             }
@@ -134,28 +134,8 @@ define([
 
         evaluate : evaluate,
 
-        html : function(node,value) {
 
-            var result = noder.html(node,value);
-
-            if (value !== undefined) {
-                var scripts = node.querySelectorAll('script');
-
-                for (var i =0; i<scripts.length; i++) {
-                    var node1 = scripts[i];
-                    if (rscriptType.test( node1.type || "" ) ) {
-                      evaluate(node1.textContent,node1);
-                    }
-                }       
-                return this;         
-            } else {
-                return result;
-            }
-
-
-
-        }
     });
 
-    return skylark.attach("domx.scripter", scripter);
+    return skylark.attach("langx.scripter", scripter);
 });

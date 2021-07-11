@@ -1,9 +1,95 @@
-define([
+/**
+ * skylark-langx-scripter - The skylark JavaScript language extension library.
+ * @author Hudaokeji Co.,Ltd
+ * @version v0.9.0
+ * @link www.skylarkjs.org
+ * @license MIT
+ */
+(function(factory,globals) {
+  var define = globals.define,
+      require = globals.require,
+      isAmd = (typeof define === 'function' && define.amd),
+      isCmd = (!isAmd && typeof exports !== 'undefined');
+
+  if (!isAmd && !define) {
+    var map = {};
+    function absolute(relative, base) {
+        if (relative[0]!==".") {
+          return relative;
+        }
+        var stack = base.split("/"),
+            parts = relative.split("/");
+        stack.pop(); 
+        for (var i=0; i<parts.length; i++) {
+            if (parts[i] == ".")
+                continue;
+            if (parts[i] == "..")
+                stack.pop();
+            else
+                stack.push(parts[i]);
+        }
+        return stack.join("/");
+    }
+    define = globals.define = function(id, deps, factory) {
+        if (typeof factory == 'function') {
+            map[id] = {
+                factory: factory,
+                deps: deps.map(function(dep){
+                  return absolute(dep,id);
+                }),
+                resolved: false,
+                exports: null
+            };
+            require(id);
+        } else {
+            map[id] = {
+                factory : null,
+                resolved : true,
+                exports : factory
+            };
+        }
+    };
+    require = globals.require = function(id) {
+        if (!map.hasOwnProperty(id)) {
+            throw new Error('Module ' + id + ' has not been defined');
+        }
+        var module = map[id];
+        if (!module.resolved) {
+            var args = [];
+
+            module.deps.forEach(function(dep){
+                args.push(require(dep));
+            })
+
+            module.exports = module.factory.apply(globals, args) || null;
+            module.resolved = true;
+        }
+        return module.exports;
+    };
+  }
+  
+  if (!define) {
+     throw new Error("The module utility (ex: requirejs or skylark-utils) is not loaded!");
+  }
+
+  factory(define,require);
+
+  if (!isAmd) {
+    var skylarkjs = require("skylark-langx-ns");
+
+    if (isCmd) {
+      module.exports = skylarkjs;
+    } else {
+      globals.skylarkjs  = skylarkjs;
+    }
+  }
+
+})(function(define,require) {
+
+define('skylark-langx-scripter/scripter',[
     "skylark-langx/skylark",
-    "skylark-langx/langx",
-    "skylark-domx-noder",
-    "skylark-domx-finder"
-], function(skylark, langx, noder, finder) {
+    "skylark-langx/langx"
+], function(skylark, langx, noder) {
 
     var head = document.getElementsByTagName('head')[0],
         scriptsByUrl = {},
@@ -126,7 +212,9 @@ define([
             var node = scriptElementsById[id];
             if (node) {
                 var url = node.src;
-                noder.remove(node);
+                if (node.parentNode) {
+                    node.parentNode.remove(node);
+                }
                 delete scriptElementsById[id];
                 delete scriptsByUrl[url];
             }
@@ -134,28 +222,19 @@ define([
 
         evaluate : evaluate,
 
-        html : function(node,value) {
 
-            var result = noder.html(node,value);
-
-            if (value !== undefined) {
-                var scripts = node.querySelectorAll('script');
-
-                for (var i =0; i<scripts.length; i++) {
-                    var node1 = scripts[i];
-                    if (rscriptType.test( node1.type || "" ) ) {
-                      evaluate(node1.textContent,node1);
-                    }
-                }       
-                return this;         
-            } else {
-                return result;
-            }
-
-
-
-        }
     });
 
-    return skylark.attach("domx.scripter", scripter);
+    return skylark.attach("langx.scripter", scripter);
 });
+define('skylark-langx-scripter/main',[
+	"./scripter"
+],function(scripter){
+	
+	return scripter;
+});
+define('skylark-langx-scripter', ['skylark-langx-scripter/main'], function (main) { return main; });
+
+
+},this);
+//# sourceMappingURL=sourcemaps/skylark-langx-scripter.js.map
