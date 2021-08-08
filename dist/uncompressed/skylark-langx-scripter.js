@@ -96,8 +96,6 @@ define('skylark-langx-scripter/scripter',[
         scriptElementsById = {},
         count = 0;
 
-    var rscriptType = ( /^$|^module$|\/(?:java|ecma)script/i );
-
     function scripter() {
         return scripter;
     }
