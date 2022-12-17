@@ -22,6 +22,10 @@
   ],
   "author": "Hudaokeji Co.,Ltd",
   "license": "MIT",
+  "exports": {
+    ".": "./dist/uncompressed/skylark-langx-scripter/main.js",
+    "./*": "./dist/uncompressed/skylark-langx-scripter/*.js"
+  },
   "bugs": "https://github.com/skylark-langx/skylark-langx-scripter/issues",
   "dependencies": {
     "skylark-langx": "git+https://github.com/skylark-langx/skylark-langx.git"
