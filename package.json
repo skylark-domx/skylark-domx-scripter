@@ -10,7 +10,7 @@
   "homepage": "www.skylarkjs.org",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/skylark-langx/skylark-langx-scripter.git"
+    "url": "https://github.com/skylark-langx/skylark-langx-scripter.git"
   },
   "keywords": [
     "skylark",
@@ -28,7 +28,7 @@
   },
   "bugs": "https://github.com/skylark-langx/skylark-langx-scripter/issues",
   "dependencies": {
-    "skylark-langx": "git+https://github.com/skylark-langx/skylark-langx.git"
+    "skylark-langx": "https://github.com/skylark-langx/skylark-langx.git"
   },
   "engines": {
     "node": ">=0.8.0"
